@@ -1,0 +1,128 @@
+import express, { request } from "express";
+import { body } from "express-validator";
+import favoriteController from "../controllers/favorite.controller.js";
+import userController from "../controllers/user.controller.js";
+import RequestHandler from "../handlers/request.handler.js";
+import userModel from "../models/user.model.js";
+import tokenMiddleware from "../middlewares/token.middleware.js";
+import requestHandler from "../handlers/request.handler.js";
+
+const router = express.Router();
+
+router.post(
+  "/signup",
+  body("username")
+    .exists()
+    .withMessage("username is required")
+    .isLength({ min: 8 })
+    .withMessage("username minimum 8 characters")
+    .custom(async (value) => {
+      const user = await userModel.findOne({ username: value });
+      if (user) return Promise.reject("username already exists");
+    }),
+
+  body("password")
+    .exists()
+    .withMessage("password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password minimum 8 characters"),
+
+  body("confirmPassword")
+    .exists()
+    .withMessage("Confirm Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password minimum 8 characters")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) throw new Error("Password not match");
+      return true;
+    }),
+
+  body("displayName")
+    .exists()
+    .withMessage("display name is required")
+    .isLength({ min: 8 })
+    .withMessage("Display Name minimum 8 characters"),
+  requestHandler.validate,
+  userController.signup
+);
+
+router.post(
+  "/signin",
+  body("username")
+    .exists()
+    .withMessage("username is required")
+    .isLength({ min: 8 })
+    .withMessage("username minimum 8 characters"),
+
+  body("password")
+    .exists()
+    .withMessage("password is required")
+    .isLength({ min: 8 })
+    .withMessage("password  minimum 8 characters"),
+
+  requestHandler.validate,
+  userController.signin
+);
+
+router.put(
+  "/update-password",
+  tokenMiddleware.auth,
+  body("password")
+    .exists()
+    .withMessage("password is required")
+    .isLength({ min: 8 })
+    .withMessage("password minimum 8 characters"),
+
+  body("newPassword")
+    .exists()
+    .withMessage("New password is required")
+    .isLength({ min: 8 })
+    .withMessage("New password minimum 8 characters")
+    .custom((value, { req }) => {
+      if (value !== req.body.password)
+        throw new Error("New Password not match");
+      return true;
+    }),
+  requestHandler.validate,
+  userController.updatePassword
+);
+
+router.get("/info", tokenMiddleware.auth, userController.getInfo);
+
+router.get(
+  "/favorite",
+  tokenMiddleware.auth,
+  favoriteController.getFavoritesOfUser
+);
+
+router.post(
+  "/favorite",
+  tokenMiddleware.auth,
+  body("mediaType")
+    .exists()
+    .withMessage("mediaType is required")
+    .custom((type) => ["movie", "tv"].includes(type))
+    .withMessage("mediaType Invalid"),
+
+  body("mediaId")
+    .exists()
+    .withMessage("mediaId is required")
+    .isLength({ min: 1 })
+    .withMessage("mediaId cannot be empty"),
+
+  body("mediaTitle").exists().withMessage("mediaTitle is required"),
+
+  body("mediaPoster").exists().withMessage("mediaPoster is required"),
+
+  body("mediaRate").exists().withMessage("mediaRate is required"),
+
+  favoriteController.addFavorites
+);
+
+router.delete(
+  "/favorite/:favoriteId",
+  tokenMiddleware.auth,
+  favoriteController.removeFavorites
+);
+
+export default router;
