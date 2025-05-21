@@ -1,4 +1,4 @@
-import express, { request } from "express";
+import express from "express";
 import { body } from "express-validator";
 import favoriteController from "../controllers/favorite.controller.js";
 import userController from "../controllers/user.controller.js";
@@ -116,6 +116,7 @@ router.post(
 
   body("mediaRate").exists().withMessage("mediaRate is required"),
 
+  requestHandler.validate,
   favoriteController.addFavorites
 );
 
