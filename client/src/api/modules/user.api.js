@@ -53,7 +53,7 @@ const userApi = {
       });
       return { response };
     } catch (err) {
-      return { err };
+     return { err: { message: err.message, status: err.response?.status } };
     }
   },
 };

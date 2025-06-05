@@ -3,7 +3,7 @@ import PersonDetail from "../pages/PersonDetail";
 import favoriteList from "../pages/FavoriteList";
 import MediaDetail from "../pages/MediaDetail";
 import MediaList from "../pages/MediaList";
-import mediaSearch from "../pages/MediaSearch";
+import MediaSearch from "../pages/MediaSearch";
 import passwordUpdate from "../pages/PasswordUpdate";
 import reviewList from "../pages/ReviewList";
 import ProtectedPage from "../components/common/ProtectedPage";
@@ -32,44 +32,44 @@ const routes = [
   },
   {
     path: "/search",
-    element: <mediaSearch />,
+    element: <MediaSearch />,
     state: "search",
   },
   {
     path: "/password-update",
-    element:(
-        <ProtectedPage>
-            <passwordUpdate />
-        </ProtectedPage>
+    element: (
+      <ProtectedPage>
+        <passwordUpdate />
+      </ProtectedPage>
     ),
     state: "password.update",
   },
   {
     path: "/favorites",
-    element:(
-        <ProtectedPage>
-            <favoriteList />
-        </ProtectedPage>
+    element: (
+      <ProtectedPage>
+        <favoriteList />
+      </ProtectedPage>
     ),
     state: "favorite.list",
   },
   {
     path: "/reviews",
-    element:(
-        <ProtectedPage>
-            <reviewList />
-        </ProtectedPage>
+    element: (
+      <ProtectedPage>
+        <reviewList />
+      </ProtectedPage>
     ),
     state: "reviews",
   },
   {
     path: "/:mediaType",
-    element: <MediaList />
+    element: <MediaList />,
   },
   {
     path: "/:mediaType/:mediaId",
-    element: <MediaDetail />
-  }
+    element: <MediaDetail />,
+  },
 ];
 
 export default routes;

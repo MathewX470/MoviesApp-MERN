@@ -4,7 +4,7 @@ import userModel from "../models/user.model.js";
 
 const tokenDecode = (req) => {
   try {
-    const bearerHeader = req.headers["authorization"];
+    const bearerHeader = req.headers[" "];
 
     if (bearerHeader) {
       const token = bearerHeader.split(" ")[1];
@@ -17,8 +17,8 @@ const tokenDecode = (req) => {
 };
 
 const auth = async (req, res, next) => {
-  const token = tokenDecode(req);
-  if (!token) {
+  const tokenDecoded = tokenDecode(req);
+  if (!tokenDecoded) {
     return responseHandler.unauthorized(res);
   }
   const user= await userModel.findById(tokenDecoded.data)

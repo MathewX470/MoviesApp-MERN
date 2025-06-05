@@ -125,13 +125,19 @@ const Sidebar = ({ open, toggleSidebar }) => {
   );
 
   return (
-<Drawer 
-open={open} 
-onClose={() => toggleSidebar(false)} 
-sx={{ "& .MuiDrawer-paper": { width: sidebarWidth, boxSizing: "border-box",borderRight:"0px" }}}
->
-{drawer}
-</Drawer>
+    <Drawer
+      open={open}
+      onClose={() => toggleSidebar(false)}
+      sx={{
+        "& .MuiDrawer-paper": {
+          width: sidebarWidth,
+          boxSizing: "border-box",
+          borderRight: "0px",
+        },
+      }}
+    >
+      {drawer}
+    </Drawer>
   );
 };
 
