@@ -11,6 +11,7 @@ const userEndpoints = {
 const userApi = {
   signin: async ({ username, password }) => {
     try {
+      //await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate delay
       const response = await publicClient.post(userEndpoints.signin, {
         username,
         password,

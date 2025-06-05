@@ -19,7 +19,7 @@ import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import { setThemeMode } from "../../redux/features/themeModeSlice";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
-
+import Sidebar from "./Sidebar";
 
 const ScrollAppBar = ({ children, window }) => {
   const { themeMode } = useSelector((state) => state.themeMode);
@@ -48,7 +48,7 @@ const Topbar = () => {
   const { appState } = useSelector((state) => state.appState);
   const { themeMode } = useSelector((state) => state.themeMode);
 
-  const [sideBarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -58,8 +58,13 @@ const Topbar = () => {
     dispatch(setThemeMode(theme));
   };
 
+const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <>
+    <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar}/>
       <ScrollAppBar>
         <AppBar elevation={0} sx={{ zIndex: 9999 }}>
           <Toolbar
@@ -67,49 +72,61 @@ const Topbar = () => {
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <IconButton
-              color="inherit"
-              sx={{mr:2,display:{md:"none"}}}
+                color="inherit"
+                sx={{ mr: 2, display: { md: "none" } }}
+                onClick={toggleSidebar}
               >
                 <MenuIcon />
               </IconButton>
-              <Box sx={{display:{msx:"inLine-block",md:"none"}}}>
+              <Box sx={{ display: { msx: "inLine-block", md: "none" } }}>
                 <Logo />
               </Box>
             </Stack>
             {/* main menu */}
-            <Box flexGrow={1} alignItems="center" display={{xs:"none",md:"flex"}}>
-              <Box sx={{marginRight:"30px"}}>
+            <Box
+              flexGrow={1}
+              alignItems="center"
+              display={{ xs: "none", md: "flex" }}
+            >
+              <Box sx={{ marginRight: "30px" }}>
                 <Logo />
               </Box>
               {menuConfigs.main.map((item, index) => (
-                <Button 
-                key={index}
-                sx={{
-                  color:appState.includes(item.state)?"primary.contrastText":"inherit",
-                  mr:2
-                }}
-                component={Link}
-                to={item.path}
-                variant={appState.includes(item.state)?"contained":"text"}
+                <Button
+                  key={index}
+                  sx={{
+                    color: appState.includes(item.state)
+                      ? "primary.contrastText"
+                      : "inherit",
+                    mr: 2,
+                  }}
+                  component={Link}
+                  to={item.path}
+                  variant={appState.includes(item.state) ? "contained" : "text"}
                 >
                   {item.display}
                 </Button>
               ))}
-              <IconButton
-              sx={{color:"inherit"}}
-              onClick={onSwitchTheme}
-              >
-                {themeMode===themeModes.dark && <DarkModeOutlinedIcon/>}
-                {themeMode===themeModes.light && <WbSunnyOutlinedIcon/>}
+              <IconButton sx={{ color: "inherit" }} onClick={onSwitchTheme}>
+                {themeMode === themeModes.dark && <DarkModeOutlinedIcon />}
+                {themeMode === themeModes.light && <WbSunnyOutlinedIcon />}
               </IconButton>
             </Box>
             {/* main menu */}
 
-
             {/* user menu */}
-            <UserMenu />
+            <Stack direction="row" spacing={3} alignItems="center">
+              {!user && (
+                <Button
+                  variant="contained"
+                  onClick={() => dispatch(setAuthModalOpen(true))}
+                >
+                  sign in
+                </Button>
+              )}
+            </Stack>
+            {user && <UserMenu />}
             {/* user menu */}
-            
           </Toolbar>
         </AppBar>
       </ScrollAppBar>
