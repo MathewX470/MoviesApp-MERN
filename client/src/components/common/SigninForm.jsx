@@ -28,27 +28,18 @@ const SigninForm = ({ switchAuthState }) => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
-      console.log("Submitting login form...", values); // already added
       setErrorMessage(undefined);
       setIsLoginRequest(true);
-
       const { response, err } = await userApi.signin(values);
-
-      console.log("API Response:", { response, err }); // <-- ADD THIS
-
       setIsLoginRequest(false);
-
       if (response) {
         signinForm.resetForm();
         dispatch(setUser(response));
         dispatch(setAuthModalOpen(false));
         toast.success("Signin successfully");
       }
-
       if (err) {
-        const message =
-          err.errors || err.message || err || "Something went wrong";
-        setErrorMessage(message);
+        setErrorMessage(err.message);
       }
     },
   });

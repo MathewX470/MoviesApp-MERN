@@ -5,13 +5,12 @@ const userEndpoints = {
   signin: "user/signin",
   signup: "user/signup",
   passwordUpdate: "user/update-password",
-  getInfo: "user/get-info",
+  getInfo: "user/info",
 };
 
 const userApi = {
   signin: async ({ username, password }) => {
     try {
-      //await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate delay
       const response = await publicClient.post(userEndpoints.signin, {
         username,
         password,
@@ -45,18 +44,18 @@ const userApi = {
     }
   },
 
-  passwordUpdate: async ({password,newPassword,confimNewPassword}) => {
+  passwordUpdate: async ({ password, newPassword, confimNewPassword }) => {
     try {
-        const response = await privateClient.put(userEndpoints.passwordUpdate, {
-          password,
-          newPassword,
-          confimNewPassword
-        });
-        return { response };
+      const response = await privateClient.put(userEndpoints.passwordUpdate, {
+        password,
+        newPassword,
+        confimNewPassword,
+      });
+      return { response };
     } catch (err) {
       return { err };
     }
-  }
+  },
 };
 
 export default userApi;
